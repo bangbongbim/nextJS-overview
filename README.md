@@ -56,3 +56,69 @@ import Link from 'next/link'
 ```
 >_app은 서버로 요청이 들어왔을 때 가장 먼저 실행되는 컴포넌트로, 페이지에 적용할 공통 레이아웃의 역할을 함.
 
+## redirect
+``` js
+async redirects(){
+    return [
+      {
+        source:"/contact",
+        destination:"/form",
+        permanent:false,
+      }
+    ]
+  }
+```
+
+## rewrite
+``` js
+async rewrites(){
+    return [
+      {
+        source : "/api/movies",
+        destination:`https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`
+      }
+    ]
+  }
+}
+```
+
+## Server Side Rendering
+```js
+export async function getServerSideProps() {
+    const { results } = await (
+      await fetch(`http://localhost:3000/api/movies`)
+    ).json();
+    return {
+      props: {
+        results,
+      },
+    };
+  }
+```
+> page에 props로 넘겨줌
+
+
+## Dynamic URL
+
+```js
+import { useRouter } from "next/router";
+
+export default function Detail(){
+    const router = useRouter()
+    console.log(router);
+    return <div>
+        <h4>{router.query.title || "Loading"} </h4>
+    </div>
+}
+```
+>page폴더 안에 []로 감싸진 파일 생성
+
+## url masking
+```js
+  router.push({
+            pathname:`/movies/${id}`,
+            query:{
+                title:"potato"
+            }
+        },`/movies/${id}`)
+```
